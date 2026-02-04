@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Viewport設定: 自動ズームを防ぐために maximum-scale=1.0, user-scalable=no を追加 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Payoff - Project Manager</title>
     
     <!-- React & ReactDOM -->
@@ -22,6 +23,8 @@
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background-color: #020617; /* slate-950 */
+            /* iOSでのタップハイライトを無効化 */
+            -webkit-tap-highlight-color: transparent;
         }
         /* Custom Utilities */
         .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
@@ -32,6 +35,15 @@
             to { opacity: 1; transform: scale(1); }
         }
         .animate-modal { animation: modalFadeIn 0.2s ease-out forwards; }
+
+        /* モバイル端末での入力時ズーム防止策 
+           画面幅が狭い場合、入力要素のフォントサイズを強制的に16pxにする
+        */
+        @media screen and (max-width: 768px) {
+            input, textarea, select {
+                font-size: 16px !important;
+            }
+        }
     </style>
 </head>
 <body class="text-slate-200 overflow-hidden">
@@ -175,7 +187,6 @@
           const [tempProjectName, setTempProjectName] = useState("");
           
           // Project Menu State (Popover)
-          // 位置情報を管理し、ポータルのように最前面に表示するためのState
           const [projectMenu, setProjectMenu] = useState({ 
               isOpen: false, 
               id: null, 
@@ -588,7 +599,8 @@
                                                     type="text" 
                                                     value={tempProjectName} 
                                                     onChange={e => setTempProjectName(e.target.value)}
-                                                    className="w-full bg-slate-950 border border-indigo-500 rounded px-2 py-1 text-sm focus:outline-none"
+                                                    // Mobile Zoom Prevent: text-base for mobile, text-sm for desktop
+                                                    className="w-full bg-slate-950 border border-indigo-500 rounded px-2 py-1 text-base md:text-sm focus:outline-none"
                                                     autoFocus
                                                 />
                                                 <button onClick={() => saveProjectName(p.id)} className="p-1 bg-indigo-600 rounded text-white"><Check className="w-4 h-4" /></button>
